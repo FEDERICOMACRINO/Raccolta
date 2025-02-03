@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Registrazione</h2>
+    <form id="registrationForm" method="post">
+        <input type="text" name="nome" id="nome" placeholder="Nome" required>
+        <input type="text" name="ragione" id="ragione" placeholder="ragione" required>
+        <button type="submit">Registrati</button>
+    </form>
+    <p id="message"></p>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("registrationForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Evita il refresh della pagina
+        
+        var formData = new FormData(this); // Prende i dati dal form
+        var data = {
+            nome: formData.get("nome"),
+            ragione: formData.get("ragione"),
+        };
+
+        var url = '/register'; // URL corretta della route nel server
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Errore nella richiesta");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Risposta dal server:", data);
+            document.getElementById("message").textContent = "Registrazione completata con successo!";
+            document.getElementById("message").style.color = "green";
+            document.getElementById("registrationForm").reset(); // Reset del form
+        })
+        .catch(error => {
+            console.error("Errore:", error);
+            document.getElementById("message").textContent = "Errore durante la registrazione. Riprova.";
+            document.getElementById("message").style.color = "red";
+        });
+    });
+});
+</script>
+
+</body>
+</html>
