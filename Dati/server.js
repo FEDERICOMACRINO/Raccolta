@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 const serviceAccount = require("./serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://database-cac4e-default-rtdb.firebaseio.com/" // Sostituisci con il tuo URL Firestore
+  databaseURL: "https://database-cac4e-default-rtdb.firebaseio.com" // Sostituisci con il tuo URL Firestore
 });
 
 const db = admin.firestore();
