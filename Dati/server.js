@@ -5,7 +5,7 @@ const admin = require("firebase-admin");
 const path = require("path");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Usa la porta fornita da Render o 3000 come fallback
 
 // Middleware
 app.use(cors());
