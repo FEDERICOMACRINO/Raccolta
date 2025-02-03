@@ -2,29 +2,29 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin = require("firebase-admin");
+const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// 🔥 Legge le credenziali Firebase dalle variabili d'ambiente su Render
-const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
-
-// 🔥 Inizializza Firebase Admin SDK
+// Inizializza Firebase Admin SDK
+const serviceAccount = require("./serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "" // 🔴 Sostituisci con il tuo URL Firestore!
+  databaseURL: "https://database-cac4e-default-rtdb.firebaseio.com/" // Sostituisci con il tuo URL Firestore
 });
 
 const db = admin.firestore();
 
-// 🟢 Servire i file statici (es. index.html)
-app.use(express.static("public"));
+// Servire i file statici
+app.use(express.static(path.join(__dirname, "public")));
 
-// 📌 Route per la registrazione
+// Route per la registrazione
 app.post("/register", async (req, res) => {
   const { nome, ragione } = req.body;
 
@@ -33,13 +33,11 @@ app.post("/register", async (req, res) => {
   }
 
   try {
-    // 🔥 Salva i dati su Firebase Firestore
-    await db.collection("registrazioni").add({ 
-      nome, 
-      ragione, 
-      timestamp: new Date() 
+    await db.collection("registrazioni").add({
+      nome,
+      ragione,
+      timestamp: new Date()
     });
-
     res.status(200).json({ message: "Registrazione completata con successo!" });
   } catch (error) {
     console.error("Errore Firestore:", error);
@@ -47,12 +45,11 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// 🔥 Route per ottenere le registrazioni salvate
+// Route per ottenere le registrazioni salvate
 app.get("/registrazioni", async (req, res) => {
   try {
     const snapshot = await db.collection("registrazioni").orderBy("timestamp", "desc").get();
     const registrazioni = snapshot.docs.map(doc => doc.data());
-
     res.status(200).json(registrazioni);
   } catch (error) {
     console.error("Errore Firestore:", error);
@@ -60,7 +57,7 @@ app.get("/registrazioni", async (req, res) => {
   }
 });
 
-// 🚀 Avvia il server su Render
+// Avvio del server
 app.listen(PORT, () => {
   console.log(`Server in ascolto sulla porta ${PORT}`);
 });
