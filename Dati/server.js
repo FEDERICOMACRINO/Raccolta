@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin = require("firebase-admin");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 10000; // Usa la porta fornita da Render o 3000 come fallback
@@ -12,11 +13,16 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Percorso del file segreto fornito da Render
+const serviceAccountPath = '/etc/secrets/serviceAccountKey.json';  // Path nel tuo ambiente Render
+
+// Leggi il file JSON
+const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+
 // Inizializza Firebase Admin SDK con il Realtime Database
-const serviceAccount = require("./serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://database-cac4e-default-rtdb.firebaseio.com"
+  databaseURL: "https://database-cac4e-default-rtdb.firebaseio.com" // URL del tuo Realtime Database
 });
 
 const db = admin.database();
