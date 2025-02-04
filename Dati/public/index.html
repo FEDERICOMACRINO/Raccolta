@@ -30,7 +30,7 @@
             font-size: 16px;
         }
         button {
-            background-color: #28a745;
+            background-color: #dc3545;
             color: white;
             border: none;
             cursor: pointer;
@@ -38,7 +38,7 @@
         #message {
             margin-top: 10px;
             font-size: 14px;
-            color: green;
+            color: red;
         }
     </style>
 </head>
@@ -47,8 +47,13 @@
 <div class="container">
     <h2>Registrazione</h2>
     <form id="registrationForm" method="post">
-        <input type="text" name="nome" id="nome" placeholder="Nome" required>
-        <input type="text" name="ragione" id="ragione" placeholder="ragione" required>
+        <input type="text" name="nome" id="nome" placeholder="Nome e Cognome" required>
+        <input type="text" name="ragione" id="ragione" placeholder="Ragione Sociale" required>
+        <input type="text" name="indirizzo" id="indirizzo" placeholder="Indirizzo" required>
+        <input type="tel" name="telefono" id="telefono" placeholder="Numero di Telefono" required>
+        <label>
+            <input type="checkbox" id="privacy" required> Accetto i termini sulla privacy
+        </label>
         <button type="submit">Registrati</button>
     </form>
     <p id="message"></p>
@@ -59,13 +64,21 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("registrationForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Evita il refresh della pagina
         
-        var formData = new FormData(this); // Prende i dati dal form
+        if (!document.getElementById("privacy").checked) {
+            document.getElementById("message").textContent = "Devi accettare la privacy.";
+            document.getElementById("message").style.color = "red";
+            return;
+        }
+
+        var formData = new FormData(this);
         var data = {
             nome: formData.get("nome"),
             ragione: formData.get("ragione"),
+            indirizzo: formData.get("indirizzo"),
+            telefono: formData.get("telefono"),
         };
 
-        var url = '/register'; // URL corretta della route nel server
+        var url = '/register';
 
         fetch(url, {
             method: "POST",
@@ -83,8 +96,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             console.log("Risposta dal server:", data);
             document.getElementById("message").textContent = "Registrazione completata con successo!";
-            document.getElementById("message").style.color = "green";
-            document.getElementById("registrationForm").reset(); // Reset del form
+            document.getElementById("message").style.color = "red";
+            document.getElementById("registrationForm").reset();
         })
         .catch(error => {
             console.error("Errore:", error);
