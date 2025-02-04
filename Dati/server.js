@@ -38,9 +38,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Route per la registrazione (scrittura su Realtime Database)
 app.post("/register", async (req, res) => {
-    const { nome, ragione } = req.body;
+    const { nome, ragione, indirizzo, telefono } = req.body;
     
-    if (!nome || !ragione) {
+    if (!nome || !ragione || !indirizzo || !telefono) {
         return res.status(400).json({ message: "Tutti i campi sono obbligatori!" });
     }
 
@@ -50,6 +50,8 @@ app.post("/register", async (req, res) => {
         await ref.push({
             nome,
             ragione,
+            indirizzo,
+            telefono,
             timestamp: new Date().toISOString()
         });
         res.status(200).json({ message: "Registrazione completata con successo!" });
