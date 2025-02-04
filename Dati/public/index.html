@@ -13,6 +13,7 @@
             align-items: center;
             height: 100vh;
             background-color: #f4f4f4;
+            flex-direction: column;
         }
         .container {
             background: white;
@@ -44,13 +45,34 @@
         }
         .success {
             color: green;
+            font-size: 24px;
+            text-align: center;
         }
         .success::before {
-            content: '\2714\0020'; /* Spunta verde */
-            font-size: 16px;
+            content: '\2714'; /* Spunta verde */
+            font-size: 100px;
+            display: block;
+            text-align: center;
+            color: green;
         }
         .error {
             color: red;
+        }
+        .flag-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 255, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            display: none;
         }
     </style>
 </head>
@@ -69,6 +91,10 @@
         <button type="submit">Registrati</button>
     </form>
     <p id="message"></p>
+</div>
+
+<div class="flag-container" id="flag">
+    ✅ Registrazione Completata con Successo!
 </div>
 
 <script>
@@ -111,9 +137,11 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             console.log("Risposta dal server:", data);
-            messageElement.textContent = "Registrazione completata con successo!";
-            messageElement.className = "success";
-            document.getElementById("registrationForm").reset();
+            document.getElementById("flag").style.display = "flex";
+            setTimeout(() => {
+                document.getElementById("flag").style.display = "none";
+                document.getElementById("registrationForm").reset();
+            }, 20000);
         })
         .catch(error => {
             console.error("Errore:", error);
