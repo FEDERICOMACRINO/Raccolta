@@ -23,6 +23,12 @@
             width: 300px;
             text-align: center;
         }
+        .logo {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+        }
         input, button {
             display: block;
             width: 100%;
@@ -79,6 +85,7 @@
 <body>
 
 <div class="container">
+    <img src="logo.png" alt="Logo" class="logo">
     <h2>Registrazione</h2>
     <form id="registrationForm" method="post">
         <input type="text" name="nome" id="nome" placeholder="Nome e Cognome" required>
