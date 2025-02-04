@@ -38,6 +38,18 @@
         #message {
             margin-top: 10px;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .success {
+            color: green;
+        }
+        .success::before {
+            content: '\2714\0020'; /* Spunta verde */
+            font-size: 16px;
+        }
+        .error {
             color: red;
         }
     </style>
@@ -64,9 +76,13 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("registrationForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Evita il refresh della pagina
         
+        var messageElement = document.getElementById("message");
+        messageElement.textContent = "";
+        messageElement.className = "";
+        
         if (!document.getElementById("privacy").checked) {
-            document.getElementById("message").textContent = "Devi accettare la privacy.";
-            document.getElementById("message").style.color = "red";
+            messageElement.textContent = "Devi accettare la privacy.";
+            messageElement.className = "error";
             return;
         }
 
@@ -95,14 +111,14 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             console.log("Risposta dal server:", data);
-            document.getElementById("message").textContent = "Registrazione completata con successo!";
-            document.getElementById("message").style.color = "red";
+            messageElement.textContent = "Registrazione completata con successo!";
+            messageElement.className = "success";
             document.getElementById("registrationForm").reset();
         })
         .catch(error => {
             console.error("Errore:", error);
-            document.getElementById("message").textContent = "Errore durante la registrazione. Riprova.";
-            document.getElementById("message").style.color = "red";
+            messageElement.textContent = "Errore durante la registrazione. Riprova.";
+            messageElement.className = "error";
         });
     });
 });
