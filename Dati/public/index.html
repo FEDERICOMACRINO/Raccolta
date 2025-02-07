@@ -23,12 +23,6 @@
             width: 300px;
             text-align: center;
         }
-        .logo {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto 20px;
-        }
         input, button {
             display: block;
             width: 100%;
@@ -42,122 +36,71 @@
             border: none;
             cursor: pointer;
         }
-        #message {
-            margin-top: 10px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .success {
-            color: green;
-            font-size: 24px;
-            text-align: center;
-        }
-        .success::before {
-            content: '\2714'; /* Spunta verde */
-            font-size: 100px;
-            display: block;
-            text-align: center;
-            color: green;
-        }
-        .error {
-            color: red;
-        }
-        .flag-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 255, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-            font-size: 36px;
-            font-weight: bold;
-            display: none;
-        }
+        .error { color: red; }
+        .success { color: green; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <img src="logo.png" alt="Logo" class="logo">
-    <h2>Registrazione</h2>
-    <form id="registrationForm" method="post">
-        <input type="text" name="nome" id="nome" placeholder="Nome e Cognome" required>
-        <input type="text" name="ragione" id="ragione" placeholder="Ragione Sociale" required>
-        <input type="text" name="indirizzo" id="indirizzo" placeholder="Indirizzo" required>
-        <input type="tel" name="telefono" id="telefono" placeholder="Numero di Telefono" required>
-        <label>
-            <input type="checkbox" id="privacy" required> Accetto i termini sulla privacy
-        </label>
-        <button type="submit">Registrati</button>
-    </form>
-    <p id="message"></p>
-</div>
-
-<div class="flag-container" id="flag">
-    ✅ Registrazione Completata con Successo!
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("registrationForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Evita il refresh della pagina
-        
-        var messageElement = document.getElementById("message");
-        messageElement.textContent = "";
-        messageElement.className = "";
-        
-        if (!document.getElementById("privacy").checked) {
-            messageElement.textContent = "Devi accettare la privacy.";
-            messageElement.className = "error";
-            return;
-        }
-
-        var formData = new FormData(this);
-        var data = {
-            nome: formData.get("nome"),
-            ragione: formData.get("ragione"),
-            indirizzo: formData.get("indirizzo"),
-            telefono: formData.get("telefono"),
-        };
-
-        var url = '/register';
-
-        fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Errore nella richiesta");
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Risposta dal server:", data);
-            document.getElementById("flag").style.display = "flex";
-            setTimeout(() => {
-                document.getElementById("flag").style.display = "none";
-                document.getElementById("registrationForm").reset();
-            }, 20000);
-        })
-        .catch(error => {
-            console.error("Errore:", error);
-            messageElement.textContent = "Errore durante la registrazione. Riprova.";
-            messageElement.className = "error";
+    <div class="container">
+        <h2>Registrazione</h2>
+        <form id="registrationForm" method="post">
+            <input type="text" name="nome" id="nome" placeholder="Nome e Cognome" required>
+            <input type="text" name="ragione" id="ragione" placeholder="Ragione Sociale" required>
+            <input type="text" name="indirizzo" id="indirizzo" placeholder="Indirizzo" required>
+            <input type="tel" name="telefono" id="telefono" placeholder="Numero di telefono" required>
+            <label>
+                <input type="checkbox" id="privacy" required> Accetto i termini sulla privacy
+            </label>
+            <div>
+                <p>Già cliente?</p>
+                <button type="button" id="clienteSi">Sì</button>
+                <button type="button" id="clienteNo">No</button>
+            </div>
+            <input type="hidden" id="giaCliente" name="giaCliente" value="false">
+            <button type="submit">Registrati</button>
+        </form>
+        <p id="message"></p>
+    </div>
+    <script>
+        document.getElementById("clienteSi").addEventListener("click", function () {
+            document.getElementById("giaCliente").value = "true";
         });
-    });
-});
-</script>
-
+        
+        document.getElementById("clienteNo").addEventListener("click", function () {
+            document.getElementById("giaCliente").value = "false";
+        });
+        
+        document.getElementById("registrationForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            if (!document.getElementById("privacy").checked) {
+                document.getElementById("message").textContent = "Devi accettare la privacy.";
+                document.getElementById("message").className = "error";
+                return;
+            }
+            
+            const formData = new FormData(this);
+            const data = {
+                nome: formData.get("nome"),
+                ragione: formData.get("ragione"),
+                indirizzo: formData.get("indirizzo"),
+                telefono: formData.get("telefono"),
+                giaCliente: formData.get("giaCliente") === "true"
+            };
+            
+            fetch('/register', {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(response => response.json())
+              .then(data => {
+                  document.getElementById("message").textContent = "Registrazione completata!";
+                  document.getElementById("message").className = "success";
+              })
+              .catch(error => {
+                  document.getElementById("message").textContent = "Errore durante la registrazione.";
+                  document.getElementById("message").className = "error";
+              });
+        });
+    </script>
 </body>
 </html>
