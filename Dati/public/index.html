@@ -41,6 +41,22 @@
         }
         .error { color: red; }
         .success { color: green; }
+        .flag-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 255, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +79,9 @@
             <button type="submit">Registrati</button>
         </form>
         <p id="message"></p>
+    </div>
+    <div class="flag-container" id="flag">
+        ✅ Registrazione Completata con Successo!
     </div>
     <script>
         function setSelected(button) {
@@ -104,8 +123,11 @@
                 body: JSON.stringify(data)
             }).then(response => response.json())
               .then(data => {
-                  document.getElementById("message").textContent = "Registrazione completata!";
-                  document.getElementById("message").className = "success";
+                  document.getElementById("flag").style.display = "flex";
+                  setTimeout(() => {
+                      document.getElementById("flag").style.display = "none";
+                      document.getElementById("registrationForm").reset();
+                  }, 5000);
               })
               .catch(error => {
                   document.getElementById("message").textContent = "Errore durante la registrazione.";
