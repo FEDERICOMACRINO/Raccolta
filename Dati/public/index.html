@@ -36,6 +36,9 @@
             border: none;
             cursor: pointer;
         }
+        .selected {
+            background-color: blue !important;
+        }
         .error { color: red; }
         .success { color: green; }
     </style>
@@ -62,12 +65,20 @@
         <p id="message"></p>
     </div>
     <script>
+        function setSelected(button) {
+            document.getElementById("clienteSi").classList.remove("selected");
+            document.getElementById("clienteNo").classList.remove("selected");
+            button.classList.add("selected");
+        }
+        
         document.getElementById("clienteSi").addEventListener("click", function () {
             document.getElementById("giaCliente").value = "true";
+            setSelected(this);
         });
         
         document.getElementById("clienteNo").addEventListener("click", function () {
             document.getElementById("giaCliente").value = "false";
+            setSelected(this);
         });
         
         document.getElementById("registrationForm").addEventListener("submit", function (event) {
