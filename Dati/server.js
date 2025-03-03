@@ -19,7 +19,7 @@ if (!fs.existsSync(serviceAccountPath)) {
 const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://database-cac4e-default-rtdb.firebaseio.com"
+    databaseURL: "https://clienti-4d59f-default-rtdb.firebaseio.com/"
 });
 const db = admin.database();
 
