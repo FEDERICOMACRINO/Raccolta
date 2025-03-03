@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-const serviceAccountPath = '/etc/secrets/serviceAccountKey.json';
+const serviceAccountPath = '/etc/secrets/clienti';
 if (!fs.existsSync(serviceAccountPath)) {
     console.error("❌ Il file delle credenziali non esiste:", serviceAccountPath);
     process.exit(1);
